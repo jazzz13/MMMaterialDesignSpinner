@@ -137,9 +137,9 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     if (!self.isAnimating)
         return;
     
-        NSTimeInterval ti = ABS([_animationStartDate timeIntervalSinceNow]);
+    NSTimeInterval ti = ABS([_animationStartDate timeIntervalSinceNow]);
     
-    if(ti >= 1.5)
+    if(ti >= ANIMATION_DURATION)
     {
         [self.progressLayer removeAnimationForKey:kMMRingRotationAnimationKey];
         [self.progressLayer removeAnimationForKey:kMMRingStrokeAnimationKey];
@@ -151,7 +151,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     }
     else
     {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((1.5 - ti) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((ANIMATION_DURATION - ti) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
         {
             [self stopAnimating];
         });

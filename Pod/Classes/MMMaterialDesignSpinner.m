@@ -8,12 +8,15 @@
 
 #import "MMMaterialDesignSpinner.h"
 
+#define ANIMATION_DURATION 1.5f
+
 static NSString *kMMRingStrokeAnimationKey = @"mmmaterialdesignspinner.stroke";
 static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotation";
 
 @interface MMMaterialDesignSpinner ()
 @property (nonatomic, readonly) CAShapeLayer *progressLayer;
 @property (nonatomic, readwrite) BOOL isAnimating;
+@property (nonatomic, strong) NSDate *animationStartDate;
 @end
 
 @implementation MMMaterialDesignSpinner
@@ -117,12 +120,12 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     endTailAnimation.timingFunction = self.timingFunction;
     
     CAAnimationGroup *animations = [CAAnimationGroup animation];
-    [animations setDuration:1.5f];
+    [animations setDuration:ANIMATION_DURATION];
     [animations setAnimations:@[headAnimation, tailAnimation, endHeadAnimation, endTailAnimation]];
     animations.repeatCount = INFINITY;
     [self.progressLayer addAnimation:animations forKey:kMMRingStrokeAnimationKey];
     
-    
+    _animationStartDate = [NSDate date];
     self.isAnimating = true;
     
     if (self.hidesWhenStopped) {
@@ -134,12 +137,24 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     if (!self.isAnimating)
         return;
     
-    [self.progressLayer removeAnimationForKey:kMMRingRotationAnimationKey];
-    [self.progressLayer removeAnimationForKey:kMMRingStrokeAnimationKey];
-    self.isAnimating = false;
+        NSTimeInterval ti = ABS([_animationStartDate timeIntervalSinceNow]);
     
-    if (self.hidesWhenStopped) {
-        self.hidden = YES;
+    if(ti >= 1.5)
+    {
+        [self.progressLayer removeAnimationForKey:kMMRingRotationAnimationKey];
+        [self.progressLayer removeAnimationForKey:kMMRingStrokeAnimationKey];
+        self.isAnimating = false;
+        
+        if (self.hidesWhenStopped) {
+            self.hidden = YES;
+        }
+    }
+    else
+    {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((1.5 - ti) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+        {
+            [self stopAnimating];
+        });
     }
 }
 

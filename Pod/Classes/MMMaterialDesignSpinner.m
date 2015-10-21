@@ -8,8 +8,6 @@
 
 #import "MMMaterialDesignSpinner.h"
 
-#define ANIMATION_DURATION 1.5f
-
 static NSString *kMMRingStrokeAnimationKey = @"mmmaterialdesignspinner.stroke";
 static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotation";
 
@@ -120,7 +118,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     endTailAnimation.timingFunction = self.timingFunction;
     
     CAAnimationGroup *animations = [CAAnimationGroup animation];
-    [animations setDuration:ANIMATION_DURATION];
+    [animations setDuration:MMSPINNER_CYCLE_DURATION];
     [animations setAnimations:@[headAnimation, tailAnimation, endHeadAnimation, endTailAnimation]];
     animations.repeatCount = INFINITY;
     [self.progressLayer addAnimation:animations forKey:kMMRingStrokeAnimationKey];
@@ -139,7 +137,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     
     NSTimeInterval ti = ABS([_animationStartDate timeIntervalSinceNow]);
     
-    if(ti >= ANIMATION_DURATION)
+    if(ti >= MMSPINNER_CYCLE_DURATION)
     {
         [self.progressLayer removeAnimationForKey:kMMRingRotationAnimationKey];
         [self.progressLayer removeAnimationForKey:kMMRingStrokeAnimationKey];
@@ -151,7 +149,7 @@ static NSString *kMMRingRotationAnimationKey = @"mmmaterialdesignspinner.rotatio
     }
     else
     {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((ANIMATION_DURATION - ti) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((MMSPINNER_CYCLE_DURATION - ti) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
         {
             [self stopAnimating];
         });

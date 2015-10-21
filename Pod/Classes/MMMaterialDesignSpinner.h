@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#define MMSPINNER_CYCLE_DURATION 1.5
+
 //! Project version number for MMMaterialDesignSpinner.
 FOUNDATION_EXPORT double MMMaterialDesignSpinnerVersionNumber;
 
